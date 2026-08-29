@@ -1,0 +1,22 @@
+{
+  "name": "learn-while-building",
+  "version": "0.1.0",
+  "description": "Turn real project work into adaptive, practical lessons without interrupting the build.",
+  "author": {
+    "name": "Olanrewaju Oyinbooke"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Learn While Building",
+    "shortDescription": "Learn from your own code while the agent builds it.",
+    "longDescription": "Adds a calm teaching layer to coding work: a 30-second summary first, project-grounded explanations, learning records, review questions, and optional offline HTML lessons.",
+    "developerName": "Olanrewaju Oyinbooke",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Adaptive explanations grounded in the active project",
+      "Project learning profiles and cross-session learning records",
+      "Offline interactive lesson generation with accessible visual fallbacks"
+    ],
+    "defaultPrompt": "Use $learn-while-building to explain this project work as we build it, beginning with the 30-second summary."
+  }
+}

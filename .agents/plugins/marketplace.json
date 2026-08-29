@@ -1,0 +1,21 @@
+{
+  "name": "learn-while-building",
+  "interface": {
+    "displayName": "Learn While Building",
+    "description": "Practical learning tools for people building software with coding agents."
+  },
+  "plugins": [
+    {
+      "name": "learn-while-building",
+      "source": {
+        "source": "local",
+        "path": "./plugins/learn-while-building"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "developer-tools"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Learn While Building"
+  short_description: "Turn real project work into adaptive, practical learning."
+  default_prompt: "Use $learn-while-building to help me learn from this project while we build it."
+policy:
+  allow_implicit_invocation: true

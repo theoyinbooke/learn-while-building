@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "How project work becomes a useful lesson",
+    "project": "Learn While Building",
+    "generatedAt": "2026-08-29",
+    "sourceScope": [
+      "current design conversation",
+      "skill package files",
+      "local validation results"
+    ]
+  },
+  "learningObjective": "Explain how the skill separates adaptive teaching content from a stable renderer, and identify why that separation makes the result safer to update.",
+  "summary": {
+    "whatHappened": "The project was split into a small teaching skill, structured lesson data, and a stable HTML renderer.",
+    "whyItMatters": "The agent can adapt explanations to each learner without redesigning the page or weakening accessibility on every run.",
+    "whatChanged": "Learning goals, project evidence, review questions, and visual descriptions now enter one validated data format before they become a lesson.",
+    "whatToLearn": "Separate variable content from fixed presentation when one part needs to adapt and the other needs to stay predictable.",
+    "verification": "The package tests validate the lesson data, render the page, and check its quiz and responsive layout. The optional network 3D enhancement is not required for the lesson."
+  },
+  "evidence": [
+    "SKILL.md defines when and how the agent teaches.",
+    "lesson-schema.md defines the content contract.",
+    "validate_lesson.py rejects incomplete or artificial lesson copy.",
+    "render_lesson.py creates one self-contained HTML page with an offline fallback."
+  ],
+  "beforeAfter": {
+    "before": "An agent could generate a different page structure and visual style for every lesson.",
+    "after": "The agent generates validated lesson data, then one renderer applies the same readable structure and accessibility rules.",
+    "reason": "A stable boundary makes both content adaptation and interface testing easier to reason about."
+  },
+  "concepts": [
+    {
+      "name": "Separate content from presentation",
+      "plainExplanation": "Content is the meaning of the lesson. Presentation is the layout and interaction used to communicate it. Keeping them separate lets each change for a clear reason.",
+      "projectExample": "The agent writes the summary and questions in JSON. The renderer decides typography, spacing, keyboard behavior, and the visual fallback."
+    },
+    {
+      "name": "Use project evidence as the source",
+      "plainExplanation": "An explanation becomes useful when it points to the actual decision, file, test, or behavior that produced it.",
+      "projectExample": "This lesson cites the schema, validator, renderer, and package tests instead of describing an imaginary application."
+    },
+    {
+      "name": "Make enhancement optional",
+      "plainExplanation": "A richer feature should not remove the basic path. If it fails, the learner still needs the full explanation.",
+      "projectExample": "The 3D view loads only after a button press. A labeled static relationship remains visible before and after that choice."
+    }
+  ],
+  "visualizations": [
+    {
+      "type": "flow",
+      "title": "From project work to lesson",
+      "description": "The lesson is created through a short sequence with a validation boundary.",
+      "nodes": [
+        "Inspect the current request and project evidence",
+        "Adapt to the learner's objective and prior records",
+        "Write structured lesson data",
+        "Validate tone, completeness, and quiz answers",
+        "Render and test the offline lesson"
+      ]
+    },
+    {
+      "type": "three-scene",
+      "title": "Three parts with different jobs",
+      "description": "The conversation informs the content, project evidence keeps it factual, and the renderer makes it readable.",
+      "objects": [
+        {"label": "Conversation context", "color": "olive"},
+        {"label": "Project evidence", "color": "terracotta"},
+        {"label": "Stable renderer", "color": "warm-gray"}
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "The learner changes their goal from understanding tests to understanding architecture. Which part should change first?",
+      "choices": [
+        "The structured lesson content",
+        "The page typography and keyboard controls",
+        "The color palette"
+      ],
+      "answer": 0,
+      "explanation": "The goal changes what the lesson teaches. The stable renderer should keep its readability and interaction rules."
+    },
+    {
+      "question": "The Three.js module cannot load while the learner is offline. What should happen?",
+      "choices": [
+        "The lesson should stop until the connection returns",
+        "The static relationship and complete text explanation should remain usable",
+        "The quiz should be removed"
+      ],
+      "answer": 1,
+      "explanation": "The rich view is optional. The static and text paths carry the same learning meaning without a network request."
+    }
+  ],
+  "transferQuestion": "Where else in your current project could separating variable content from stable presentation make future changes easier to test?"
+}
