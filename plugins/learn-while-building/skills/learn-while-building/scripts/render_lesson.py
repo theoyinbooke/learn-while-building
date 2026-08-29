@@ -92,6 +92,25 @@ def render_visuals(visuals: Any) -> str:
 def render_quiz(quiz: list[dict[str, Any]]) -> str:
     blocks = []
     for index, item in enumerate(quiz):
+        quiz_type = item.get("type", "multiple-choice")
+        if quiz_type != "multiple-choice":
+            blocks.append(
+                f"""
+                <fieldset class="question open-question">
+                  <legend>{index + 1}. {esc(item['question'])}</legend>
+                  <label class="response-label" for="response-{index}">Write your reasoning before revealing guidance.</label>
+                  <textarea id="response-{index}" rows="5" placeholder="Your answer"></textarea>
+                  <button type="button" class="reveal-guidance">Reveal guidance</button>
+                  <p class="answer-status status" aria-live="polite"></p>
+                  <div class="guidance" hidden>
+                    <p><strong>Guidance:</strong> {esc(item['guidance'])}</p>
+                    <p><strong>Model answer:</strong> {esc(item['modelAnswer'])}</p>
+                    <p><strong>Connection to the project:</strong> {esc(item['explanation'])}</p>
+                  </div>
+                </fieldset>
+                """
+            )
+            continue
         choices = "".join(
             f'<label><input type="radio" name="question-{index}" value="{choice_index}"> <span>{esc(choice)}</span></label>'
             for choice_index, choice in enumerate(item["choices"])
@@ -107,6 +126,37 @@ def render_quiz(quiz: list[dict[str, Any]]) -> str:
             """
         )
     return "".join(blocks)
+
+
+def render_learning_diff(data: dict[str, Any]) -> str:
+    item = data.get("learningDiff")
+    if not isinstance(item, dict):
+        return ""
+    can_now = render_list(item.get("canNow", []), "plain-list")
+    return f"""
+    <section aria-labelledby="learning-diff-heading">
+      <h2 id="learning-diff-heading">Learning Diff</h2>
+      <dl class="learning-diff">
+        <dt>Software change</dt><dd>{esc(item['softwareChange'])}</dd>
+        <dt>Why it works</dt><dd>{esc(item['whyItWorks'])}</dd>
+        <dt>Mental model</dt><dd>{esc(item['mentalModel'])}</dd>
+        <dt>You can now practice</dt><dd>{can_now}</dd>
+        <dt>Verification and limits</dt><dd>{esc(item['verificationLimits'])}</dd>
+      </dl>
+    </section>
+    """
+
+
+def render_project_trace(data: dict[str, Any]) -> str:
+    items = data.get("projectTrace")
+    if not isinstance(items, list) or not items:
+        return ""
+    rows = "".join(
+        f'<li><strong>{esc(item["label"])}</strong><code>{esc(item["path"])}</code><span>{esc(item["reason"])}</span></li>'
+        for item in items
+        if isinstance(item, dict)
+    )
+    return f'<section aria-labelledby="trace-heading"><h2 id="trace-heading">Project trace</h2><ul class="project-trace">{rows}</ul></section>'
 
 
 def render_html(data: dict[str, Any]) -> str:
@@ -139,6 +189,8 @@ def render_html(data: dict[str, Any]) -> str:
         </section>
         """
     scope = ", ".join(meta["sourceScope"])
+    learning_diff = render_learning_diff(data)
+    project_trace = render_project_trace(data)
     lesson_json = esc(json.dumps({"threeVersion": "0.180.0"}))
     return f"""<!doctype html>
 <html lang="en">
@@ -166,13 +218,13 @@ def render_html(data: dict[str, Any]) -> str:
     * {{ box-sizing: border-box; }}
     body {{ margin: 0; background: var(--paper); color: var(--ink); font-size: 17px; line-height: 1.68; }}
     a {{ color: var(--olive-dark); text-underline-offset: 0.18em; }}
-    button, input {{ font: inherit; }}
+    button, input, textarea {{ font: inherit; }}
     button {{ min-height: 44px; padding: 0.62rem 1rem; border: 1px solid var(--ink); border-radius: 5px; background: var(--ink); color: var(--surface); cursor: pointer; }}
     button:hover {{ background: var(--olive-dark); }}
     button.secondary {{ color: var(--ink); background: transparent; }}
     button.secondary:hover {{ background: #EEE7DC; }}
     button:disabled {{ opacity: 0.62; cursor: default; }}
-    button:focus-visible, input:focus-visible {{ outline: 3px solid var(--focus); outline-offset: 3px; }}
+    button:focus-visible, input:focus-visible, textarea:focus-visible {{ outline: 3px solid var(--focus); outline-offset: 3px; }}
     .page {{ width: min(100% - 2rem, 1120px); margin: 0 auto; }}
     header {{ padding: 4.4rem 0 2.2rem; border-bottom: 1px solid var(--rule); }}
     .eyebrow {{ margin: 0 0 0.7rem; color: var(--terracotta); font-size: 0.78rem; font-weight: 750; letter-spacing: 0.09em; text-transform: uppercase; }}
@@ -189,11 +241,19 @@ def render_html(data: dict[str, Any]) -> str:
     .summary dl {{ display: grid; grid-template-columns: minmax(120px, 0.34fr) 1fr; gap: 1rem 1.5rem; margin: 0; }}
     .summary dt {{ color: var(--terracotta); font-size: 0.77rem; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; }}
     .summary dd {{ margin: 0; }}
+    .brief-end {{ margin: 1.2rem 0 0; padding-top: 0.9rem; border-top: 2px solid var(--ink); font-size: 0.82rem; font-weight: 800; letter-spacing: 0.045em; text-transform: uppercase; }}
+    .learning-diff {{ display: grid; grid-template-columns: minmax(150px, 0.35fr) 1fr; gap: 1rem 1.5rem; margin: 0; }}
+    .learning-diff dt {{ color: var(--terracotta); font-size: 0.8rem; font-weight: 750; letter-spacing: 0.045em; text-transform: uppercase; }}
+    .learning-diff dd {{ margin: 0; }}
+    .learning-diff .plain-list {{ margin: 0; }}
     .objective {{ font-family: Georgia, "Times New Roman", serif; font-size: 1.48rem; line-height: 1.42; }}
     .concept + .concept {{ margin-top: 2rem; padding-top: 2rem; border-top: 1px dotted var(--rule); }}
     .project-example {{ padding-left: 1rem; border-left: 3px solid var(--olive); }}
     .plain-list {{ padding-left: 1.2rem; }}
     .plain-list li + li {{ margin-top: 0.7rem; }}
+    .project-trace {{ display: grid; gap: 0; margin: 0; padding: 0; border-top: 1px solid var(--rule); list-style: none; }}
+    .project-trace li {{ display: grid; grid-template-columns: minmax(110px, 0.24fr) minmax(170px, 0.35fr) 1fr; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); }}
+    .project-trace code {{ overflow-wrap: anywhere; color: var(--olive-dark); }}
     .comparison {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1px; overflow: hidden; margin-bottom: 1.3rem; border: 1px solid var(--rule); background: var(--rule); }}
     .comparison > div {{ padding: 1.3rem; background: var(--surface); }}
     .visual {{ margin: 1.4rem 0 0; padding: 1.4rem 0 0; }}
@@ -215,6 +275,11 @@ def render_html(data: dict[str, Any]) -> str:
     .choices label:has(input:checked) {{ border-color: var(--olive); background: var(--surface); }}
     .choices input {{ margin-top: 0.35rem; accent-color: var(--olive-dark); }}
     .status {{ min-height: 1.6em; color: var(--olive-dark); font-weight: 650; }}
+    .response-label {{ display: block; margin-bottom: 0.55rem; color: var(--gray); font-size: 0.9rem; }}
+    textarea {{ width: 100%; margin-bottom: 0.8rem; padding: 0.8rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--ink); line-height: 1.5; resize: vertical; }}
+    .guidance {{ margin-top: 1rem; padding: 1rem 1.1rem; border-left: 4px solid var(--olive); background: var(--surface); }}
+    .guidance p {{ margin: 0; }}
+    .guidance p + p {{ margin-top: 0.75rem; }}
     .transfer {{ padding: 1.4rem 0 0 1.2rem; border-left: 4px solid var(--terracotta); font-family: Georgia, "Times New Roman", serif; font-size: 1.3rem; }}
     aside {{ align-self: start; position: sticky; top: 1.2rem; padding-top: 0.6rem; color: var(--gray); font-size: 0.86rem; }}
     aside h2 {{ color: var(--ink); font-family: inherit; font-size: 0.82rem; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; }}
@@ -227,6 +292,9 @@ def render_html(data: dict[str, Any]) -> str:
       aside {{ position: static; margin-bottom: 1rem; padding: 1rem 0 1.4rem; border-bottom: 1px solid var(--rule); }}
       .summary dl {{ grid-template-columns: 1fr; gap: 0.25rem; }}
       .summary dd + dt {{ margin-top: 0.8rem; }}
+      .learning-diff {{ grid-template-columns: 1fr; gap: 0.25rem; }}
+      .learning-diff dd + dt {{ margin-top: 0.8rem; }}
+      .project-trace li {{ grid-template-columns: 1fr; gap: 0.3rem; }}
       .comparison {{ grid-template-columns: 1fr; }}
       .visual-actions {{ align-items: flex-start; flex-direction: column; }}
     }}
@@ -256,7 +324,7 @@ def render_html(data: dict[str, Any]) -> str:
     <main>
       <div class="content">
         <section class="summary" aria-labelledby="summary-heading">
-          <h2 id="summary-heading">30-second summary</h2>
+          <h2 id="summary-heading">30-second learning brief</h2>
           <dl>
             <dt>What happened</dt><dd>{esc(summary['whatHappened'])}</dd>
             <dt>Why it matters</dt><dd>{esc(summary['whyItMatters'])}</dd>
@@ -264,7 +332,9 @@ def render_html(data: dict[str, Any]) -> str:
             <dt>What to learn</dt><dd>{esc(summary['whatToLearn'])}</dd>
             <dt>Verification</dt><dd>{esc(summary['verification'])}</dd>
           </dl>
+          <p class="brief-end">End of 30-second learning brief</p>
         </section>
+        {learning_diff}
         <section aria-labelledby="objective-heading">
           <h2 id="objective-heading">Your learning goal</h2>
           <p class="objective">{esc(data['learningObjective'])}</p>
@@ -275,6 +345,7 @@ def render_html(data: dict[str, Any]) -> str:
           {concepts}
         </section>
         {evidence}
+        {project_trace}
         {render_visuals(data.get('visualizations'))}
         <section aria-labelledby="practice-heading">
           <h2 id="practice-heading">Try it yourself</h2>
@@ -288,7 +359,7 @@ def render_html(data: dict[str, Any]) -> str:
       <aside aria-labelledby="contents-heading">
         <h2 id="contents-heading">In this lesson</h2>
         <ol>
-          <li>Read the short summary</li>
+          <li>Read the learning brief</li>
           <li>Build the mental model</li>
           <li>Inspect the project evidence</li>
           <li>Answer without peeking</li>
@@ -310,6 +381,22 @@ def render_html(data: dict[str, Any]) -> str:
         }}
         const correct = Number(selected.value) === Number(question.dataset.answer);
         status.textContent = `${{correct ? 'That fits the evidence.' : 'Look at the project evidence once more.'}} ${{question.dataset.explanation}}`;
+      }});
+    }});
+
+    document.querySelectorAll('.reveal-guidance').forEach((button) => {{
+      button.addEventListener('click', () => {{
+        const question = button.closest('.question');
+        const response = question.querySelector('textarea');
+        const status = question.querySelector('.answer-status');
+        if (!response.value.trim()) {{
+          status.textContent = 'Write an attempt before revealing guidance.';
+          response.focus();
+          return;
+        }}
+        question.querySelector('.guidance').hidden = false;
+        status.textContent = 'Compare your reasoning with the guidance below.';
+        button.disabled = true;
       }});
     }});
 
@@ -380,7 +467,9 @@ def main() -> int:
         data = load_and_validate(args.lesson)
         output = args.output.expanduser().resolve()
         output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(render_html(data), encoding="utf-8")
+        rendered = render_html(data)
+        clean_rendered = "\n".join(line.rstrip() for line in rendered.splitlines()) + "\n"
+        output.write_text(clean_rendered, encoding="utf-8")
     except (OSError, LessonError) as exc:
         print(f"Could not render lesson: {exc}")
         return 1

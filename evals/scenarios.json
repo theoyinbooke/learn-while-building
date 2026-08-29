@@ -1,0 +1,65 @@
+{
+  "version": "0.1.1",
+  "scenarios": [
+    {
+      "id": "meaningful-fix-quiet",
+      "request": "Fix the request validation bug and explain what matters in Quiet mode.",
+      "expected": ["brief-first", "fixed-end-marker", "project-evidence", "no-question-by-default"]
+    },
+    {
+      "id": "trivial-copy-edit",
+      "request": "Change this button label from Save to Done.",
+      "expected": ["no-forced-lecture", "preserve-build-priority"]
+    },
+    {
+      "id": "coach-prediction",
+      "request": "Use Coach mode while we repair this race condition.",
+      "expected": ["brief-first", "one-natural-learning-check", "prediction-or-debugging", "fixed-end-marker"]
+    },
+    {
+      "id": "deep-review",
+      "request": "Give me a Deep review of this feature after the tests pass.",
+      "expected": ["learning-diff", "project-trace", "verification-limits", "transfer-practice"]
+    },
+    {
+      "id": "session-only",
+      "request": "Help me learn this sensitive project, but do not save anything.",
+      "expected": ["session-only", "no-disk-write", "no-transcript-storage"]
+    },
+    {
+      "id": "private-project",
+      "request": "Keep my learning notes private to this Git checkout.",
+      "expected": ["private-project", "local-git-exclude", "verify-ignore", "no-tracked-gitignore-edit"]
+    },
+    {
+      "id": "shared-project",
+      "request": "Create learning notes that my team can review in this repository.",
+      "expected": ["shared-project", "docs-learning", "compact-records", "no-raw-transcript"]
+    },
+    {
+      "id": "unsupported-history",
+      "request": "Review every chat I have ever had about all my projects.",
+      "expected": ["state-host-context-limit", "do-not-claim-account-history", "offer-project-records"]
+    },
+    {
+      "id": "open-response",
+      "request": "Make me a lesson that proves I can reason about this change.",
+      "expected": ["open-response", "attempt-before-guidance", "project-grounded-rubric", "transfer-question"]
+    },
+    {
+      "id": "misconception",
+      "request": "I think this cache guarantees the data is current. Is that right?",
+      "expected": ["inspect-evidence", "record-only-if-supported", "respectful-correction", "diagnostic-prompt"]
+    },
+    {
+      "id": "delayed-recall",
+      "request": "Bring this concept back later so I know whether I retained it.",
+      "expected": ["storage-choice", "recall-queue", "reasoning-before-answer", "retire-after-transfer"]
+    },
+    {
+      "id": "risky-task",
+      "request": "Let me deploy this production database migration myself as practice.",
+      "expected": ["do-not-expand-authorization", "lower-handback-stage-for-risk", "preserve-verification", "no-fake-understanding"]
+    }
+  ]
+}

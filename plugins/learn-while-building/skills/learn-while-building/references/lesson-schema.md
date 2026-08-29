@@ -1,6 +1,6 @@
 # Lesson data schema
 
-The renderer accepts one UTF-8 JSON object.
+The renderer accepts one UTF-8 JSON object. The complete example lives in `assets/sample-lesson.json`.
 
 ## Required fields
 
@@ -10,7 +10,7 @@ The renderer accepts one UTF-8 JSON object.
     "title": "A factual lesson title",
     "project": "Project name",
     "generatedAt": "2026-08-29",
-    "sourceScope": ["current session", "project learning records"]
+    "sourceScope": ["current session", "project evidence"]
   },
   "learningObjective": "One observable objective",
   "summary": {
@@ -20,6 +20,13 @@ The renderer accepts one UTF-8 JSON object.
     "whatToLearn": "The reusable idea",
     "verification": "Evidence and limits"
   },
+  "learningDiff": {
+    "softwareChange": "The actual project change",
+    "whyItWorks": "The causal explanation",
+    "mentalModel": "The reusable model",
+    "canNow": ["Predict one outcome", "Modify one nearby case"],
+    "verificationLimits": "What the evidence proves and does not prove"
+  },
   "concepts": [
     {
       "name": "Concept name",
@@ -27,49 +34,50 @@ The renderer accepts one UTF-8 JSON object.
       "projectExample": "A concrete example from this project"
     }
   ],
+  "projectTrace": [
+    {
+      "label": "Validator",
+      "path": "scripts/validate_lesson.py",
+      "reason": "Enforces the content contract"
+    }
+  ],
   "quiz": [
     {
-      "question": "A prediction, debugging, or transfer question",
-      "choices": ["Choice one", "Choice two"],
-      "answer": 0,
-      "explanation": "Why the answer fits the project evidence"
+      "type": "prediction",
+      "question": "What do you expect to happen, and why?",
+      "guidance": "What a strong answer should consider",
+      "modelAnswer": "A concise model answer",
+      "explanation": "How it connects to project evidence"
     }
   ],
   "transferQuestion": "A nearby situation where the learner can reuse the idea"
 }
 ```
 
+The summary is rendered as the maximum 30-second learning brief. The renderer always places `End of 30-second learning brief` immediately after it.
+
+## Practice types
+
+Supported `type` values:
+
+- `multiple-choice`: requires `choices` with at least two items and an integer `answer`
+- `prediction`
+- `short-answer`
+- `code-reading`
+
+Open-response types require `guidance` and `modelAnswer`. The renderer requires an attempt before revealing either. Every practice item requires `question` and `explanation`.
+
+At least one practice item must be open response. Multiple choice may supplement it but cannot be the only evidence path.
+
 ## Optional fields
 
-```json
-{
-  "evidence": ["File, test, log, or observed behavior"],
-  "beforeAfter": {
-    "before": "Prior behavior or model",
-    "after": "New behavior or model",
-    "reason": "Why the change works"
-  },
-  "visualizations": [
-    {
-      "type": "flow",
-      "title": "Request path",
-      "description": "Why this view helps",
-      "nodes": ["User request", "Validation", "Saved result"]
-    },
-    {
-      "type": "three-scene",
-      "title": "System relationship",
-      "description": "A spatial view of three connected parts",
-      "objects": [
-        {"label": "Conversation", "color": "olive"},
-        {"label": "Project evidence", "color": "terracotta"},
-        {"label": "Lesson", "color": "warm-gray"}
-      ]
-    }
-  ]
-}
-```
+- `scaffoldingStage`: integer from 1 to 6
+- `evidence`: short project evidence strings
+- `beforeAfter`: `before`, `after`, and `reason`
+- `misconceptions`: evidence-backed corrections relevant to this lesson
+- `recallPrompt`: a prompt for a later session
+- `visualizations`: `flow` or optional `three-scene`
 
-Use `flow` for sequences. Use `three-scene` only when spatial separation or relationships add real explanatory value. The 3D view is optional and network-triggered. Its static text fallback is always rendered.
+Use `flow` for sequences. Use `three-scene` only when spatial separation adds explanatory value. The 3D view is optional and network-triggered. Its static text fallback is always rendered.
 
-The validator rejects missing required fields, invalid quiz answers, em dashes, emojis, and common hype phrases.
+The validator rejects incomplete fields, unsupported practice types, a lesson with only multiple choice, invalid answer indexes, em dashes, emojis, common hype phrases, and a learning brief over 130 words.

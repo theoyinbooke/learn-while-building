@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Learn While Building helps people ship real software with coding agents while keeping the understanding.">
+  <meta property="og:title" content="Learn While Building">
+  <meta property="og:description" content="Ship the code. Keep the understanding.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#F6F1E8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23657054%22/><path d=%22M9 8h14v3H12v4h9v3h-9v6H9z%22 fill=%22%23FFFDF8%22/></svg>">
+  <title>Learn While Building</title>
+  <style>
+    :root {
+      --paper: #F6F1E8;
+      --surface: #FFFDF8;
+      --ink: #26241F;
+      --olive: #657054;
+      --olive-dark: #4E5940;
+      --terracotta: #A45D3F;
+      --gray: #746F66;
+      --rule: #D8D0C3;
+      --focus: #8A4B33;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-size: 17px; line-height: 1.65; }
+    a { color: inherit; text-underline-offset: 0.2em; }
+    button { font: inherit; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+    .shell { width: min(100% - 2rem, 1160px); margin: 0 auto; }
+    nav { display: flex; justify-content: space-between; align-items: center; min-height: 76px; border-bottom: 1px solid var(--rule); }
+    .brand { font-family: Georgia, "Times New Roman", serif; font-size: 1.12rem; text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 1.35rem; }
+    .nav-links a { color: var(--gray); font-size: 0.9rem; text-decoration: none; }
+    .nav-links a:hover { color: var(--ink); }
+    .button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: 0.68rem 1rem; border: 1px solid var(--ink); border-radius: 4px; background: var(--ink); color: var(--surface); font-size: 0.9rem; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .button:hover { background: var(--olive-dark); }
+    .button.secondary { background: transparent; color: var(--ink); }
+    .button.secondary:hover { background: #EEE7DC; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.72fr); gap: clamp(3rem, 8vw, 7rem); align-items: center; min-height: calc(100vh - 76px); padding: 5.5rem 0; }
+    h1, h2, h3 { margin-top: 0; font-family: Georgia, "Times New Roman", serif; font-weight: 500; line-height: 1.08; text-wrap: balance; }
+    h1 { max-width: 10ch; margin-bottom: 1.5rem; font-size: clamp(3.8rem, 8vw, 7.2rem); letter-spacing: -0.055em; }
+    h2 { max-width: 16ch; margin-bottom: 1.4rem; font-size: clamp(2.5rem, 5vw, 4.4rem); letter-spacing: -0.04em; }
+    h3 { margin-bottom: 0.55rem; font-size: 1.45rem; }
+    .hero-copy > p { max-width: 58ch; color: var(--gray); font-size: 1.1rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+    .brief-demo { padding: clamp(1.4rem, 4vw, 2.2rem); border: 1px solid var(--rule); background: var(--surface); box-shadow: 8px 8px 0 #E4DCCE; }
+    .brief-demo h2 { max-width: none; margin: 0 0 1rem; font-family: inherit; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.055em; text-transform: uppercase; }
+    .brief-demo p { margin: 0; }
+    .brief-end { margin-top: 1.2rem !important; padding-top: 0.8rem; border-top: 2px solid var(--ink); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+    .normal-detail { margin-top: 1.25rem; color: var(--gray); font-size: 0.86rem; }
+    section { padding: clamp(5rem, 10vw, 9rem) 0; border-top: 1px solid var(--rule); }
+    .section-intro { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); gap: clamp(2rem, 8vw, 7rem); }
+    .section-intro > p { max-width: 60ch; margin: 0; color: var(--gray); font-size: 1.08rem; }
+    .modes { display: grid; grid-template-columns: 0.72fr 1fr; gap: clamp(2rem, 8vw, 6rem); align-items: start; }
+    .mode-tabs { display: flex; flex-direction: column; border-top: 1px solid var(--rule); }
+    .mode-tab { padding: 1.1rem 0; border: 0; border-bottom: 1px solid var(--rule); background: transparent; color: var(--gray); text-align: left; cursor: pointer; }
+    .mode-tab[aria-selected="true"] { color: var(--ink); font-weight: 750; }
+    .mode-panel { min-height: 245px; padding: clamp(1.6rem, 4vw, 2.8rem); border-left: 5px solid var(--olive); background: var(--surface); }
+    .mode-panel p { max-width: 54ch; color: var(--gray); }
+    .diff { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr); gap: clamp(2rem, 8vw, 7rem); }
+    .diff-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+    .diff-list li { display: grid; grid-template-columns: 2rem 1fr; gap: 0.8rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+    .diff-list span { display: grid; width: 1.7rem; height: 1.7rem; place-items: center; border: 1px solid var(--olive); border-radius: 50%; font-size: 0.78rem; font-weight: 750; }
+    .privacy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border: 1px solid var(--rule); background: var(--rule); }
+    .privacy article { padding: clamp(1.4rem, 4vw, 2.3rem); background: var(--surface); }
+    .privacy p { color: var(--gray); }
+    .install { display: grid; grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr); gap: clamp(2rem, 8vw, 7rem); align-items: center; }
+    .command { position: relative; padding: 1.3rem 7rem 1.3rem 1.3rem; overflow-wrap: anywhere; border: 1px solid var(--rule); background: var(--surface); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88rem; }
+    .copy { position: absolute; top: 0.65rem; right: 0.65rem; min-height: 38px; padding: 0.45rem 0.65rem; border: 1px solid var(--ink); border-radius: 3px; background: transparent; color: var(--ink); font-size: 0.76rem; font-weight: 700; cursor: pointer; }
+    .copy:hover { background: #EEE7DC; }
+    footer { display: flex; justify-content: space-between; gap: 1rem; padding: 2rem 0 3rem; border-top: 1px solid var(--rule); color: var(--gray); font-size: 0.84rem; }
+    @media (max-width: 800px) {
+      .nav-links a:not(.button) { display: none; }
+      .hero, .section-intro, .modes, .diff, .install { grid-template-columns: 1fr; }
+      .hero { min-height: auto; padding: 4rem 0 5rem; }
+      h1 { font-size: clamp(3.4rem, 18vw, 5.5rem); }
+      .privacy { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      body { font-size: 16px; }
+      .shell { width: min(100% - 1.25rem, 1160px); }
+      h1 { max-width: none; font-size: 3.2rem; letter-spacing: -0.045em; }
+      .nav-links .button { min-height: 40px; padding: 0.52rem 0.7rem; }
+      .command { padding-right: 1.3rem; padding-top: 4.4rem; }
+      .copy { left: 0.65rem; right: auto; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav aria-label="Main navigation">
+      <a class="brand" href="#top">Learn While Building</a>
+      <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#privacy">Privacy</a>
+        <a class="button" href="#install">Install</a>
+      </div>
+    </nav>
+
+    <main id="top">
+      <header class="hero">
+        <div class="hero-copy">
+          <h1>Ship the code. Keep the understanding.</h1>
+          <p>A learning layer for people building real software with coding agents. It turns project decisions into clear mental models, useful practice, and knowledge that returns when you need it.</p>
+          <div class="hero-actions">
+            <a class="button" href="#install">Install the skill</a>
+            <a class="button secondary" href="https://github.com/theoyinbooke/learn-while-building">View the source</a>
+          </div>
+        </div>
+        <div>
+          <article class="brief-demo" aria-label="Example 30-second learning brief">
+            <h2>30-second learning brief</h2>
+            <p>The validation fix moves the check to the point where data enters the system. That matters because every caller now receives the same protection. The reusable idea is to enforce important rules at a shared boundary. The regression test passes. Production behavior has not been verified yet.</p>
+            <p class="brief-end">End of 30-second learning brief</p>
+          </article>
+          <p class="normal-detail">The agent's regular detailed response begins below this clear boundary.</p>
+        </div>
+      </header>
+
+      <section id="how" class="section-intro">
+        <h2>Learning comes from the work itself.</h2>
+        <p>The skill reads the active request, project evidence, tests, and the learner's chosen objective. It explains only the decisions that build a reusable mental model. The software outcome stays first.</p>
+      </section>
+
+      <section class="modes" aria-labelledby="modes-heading">
+        <div>
+          <h2 id="modes-heading">Choose how much teaching you want.</h2>
+          <div class="mode-tabs" role="tablist" aria-label="Learning modes">
+            <button class="mode-tab" role="tab" aria-selected="true" aria-controls="mode-panel" data-mode="quiet">Quiet</button>
+            <button class="mode-tab" role="tab" aria-selected="false" aria-controls="mode-panel" data-mode="coach">Coach</button>
+            <button class="mode-tab" role="tab" aria-selected="false" aria-controls="mode-panel" data-mode="deep">Deep</button>
+          </div>
+        </div>
+        <article id="mode-panel" class="mode-panel" role="tabpanel" tabindex="0">
+          <h3>Quiet</h3>
+          <p>Get the maximum 30-second learning brief, then the normal task response. No extra questions unless the work needs one. This is the default.</p>
+        </article>
+      </section>
+
+      <section class="diff">
+        <div>
+          <h2>A diff for your understanding.</h2>
+          <p>The Learning Diff connects a code change to what you can reason about next. It is grounded in the files, tests, and behavior from your project.</p>
+        </div>
+        <ol class="diff-list">
+          <li><span>1</span><div><strong>Software change</strong><br>What changed in the actual project.</div></li>
+          <li><span>2</span><div><strong>Why it works</strong><br>The causal explanation, not only a description.</div></li>
+          <li><span>3</span><div><strong>Mental model</strong><br>The idea that transfers to nearby work.</div></li>
+          <li><span>4</span><div><strong>Project trace</strong><br>The files, tests, and observations behind the claim.</div></li>
+          <li><span>5</span><div><strong>Practice and limits</strong><br>What to predict or modify, and what is still unverified.</div></li>
+        </ol>
+      </section>
+
+      <section id="privacy" aria-labelledby="privacy-heading">
+        <div class="section-intro" style="margin-bottom: 3rem;">
+          <h2 id="privacy-heading">Your project. Your memory choice.</h2>
+          <p>Conversation access is limited to what the host supplies. Durable learning is optional, scoped to one project, and never requires storing a full transcript.</p>
+        </div>
+        <div class="privacy">
+          <article><h3>Session-only</h3><p>Adapts inside the current conversation and writes no learning state to disk.</p></article>
+          <article><h3>Private-project</h3><p>Stores compact state in a locally ignored folder inside the checkout.</p></article>
+          <article><h3>Shared-project</h3><p>Stores reviewable learning records under <code>docs/learning/</code> when collaboration is intentional.</p></article>
+        </div>
+      </section>
+
+      <section id="install" class="install">
+        <div>
+          <h2>One command to start.</h2>
+          <p>Install the portable skill globally in compatible coding agents. The repository also includes Codex plugin marketplace packaging.</p>
+        </div>
+        <div class="command">
+          <span id="install-command">npx skills add theoyinbooke/learn-while-building --skill learn-while-building --global</span>
+          <button class="copy" type="button" aria-describedby="copy-status">Copy command</button>
+          <span id="copy-status" aria-live="polite" hidden></span>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Learn While Building is open source under the MIT License.</span>
+      <a href="https://github.com/theoyinbooke/learn-while-building">GitHub repository</a>
+    </footer>
+  </div>
+
+  <script>
+    const modes = {
+      quiet: ['Quiet', 'Get the maximum 30-second learning brief, then the normal task response. No extra questions unless the work needs one. This is the default.'],
+      coach: ['Coach', 'Keep the short brief and add one useful prediction, explanation, debugging, or code-reading prompt at a natural decision point.'],
+      deep: ['Deep', 'Add a full Learning Diff, project trace, open-response practice, delayed recall, and an optional visual lesson after substantial work.']
+    };
+    const panel = document.querySelector('.mode-panel');
+    document.querySelectorAll('.mode-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.mode-tab').forEach((item) => item.setAttribute('aria-selected', 'false'));
+        tab.setAttribute('aria-selected', 'true');
+        const [title, copy] = modes[tab.dataset.mode];
+        panel.innerHTML = `<h3>${title}</h3><p>${copy}</p>`;
+        panel.focus();
+      });
+    });
+    document.querySelector('.copy').addEventListener('click', async (event) => {
+      const button = event.currentTarget;
+      const value = document.querySelector('#install-command').textContent;
+      const status = document.querySelector('#copy-status');
+      try {
+        await navigator.clipboard.writeText(value);
+        button.textContent = 'Copied';
+        status.textContent = 'Install command copied.';
+      } catch (error) {
+        button.textContent = 'Select command';
+        status.textContent = 'Clipboard access was unavailable. Select and copy the command manually.';
+      }
+      status.hidden = false;
+    });
+  </script>
+</body>
+</html>

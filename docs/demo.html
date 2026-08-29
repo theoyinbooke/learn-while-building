@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23657054%22/><path d=%22M9 8h14v3H12v4h9v3h-9v6H9z%22 fill=%22%23FFFDF8%22/></svg>">
+  <title>How project work becomes a useful lesson</title>
+  <style>
+    :root {
+      --paper: #F6F1E8;
+      --surface: #FFFDF8;
+      --ink: #26241F;
+      --olive: #657054;
+      --olive-dark: #4E5940;
+      --terracotta: #A45D3F;
+      --gray: #746F66;
+      --rule: #D8D0C3;
+      --focus: #8A4B33;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-size: 17px; line-height: 1.68; }
+    a { color: var(--olive-dark); text-underline-offset: 0.18em; }
+    button, input, textarea { font: inherit; }
+    button { min-height: 44px; padding: 0.62rem 1rem; border: 1px solid var(--ink); border-radius: 5px; background: var(--ink); color: var(--surface); cursor: pointer; }
+    button:hover { background: var(--olive-dark); }
+    button.secondary { color: var(--ink); background: transparent; }
+    button.secondary:hover { background: #EEE7DC; }
+    button:disabled { opacity: 0.62; cursor: default; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .page { width: min(100% - 2rem, 1120px); margin: 0 auto; }
+    header { padding: 4.4rem 0 2.2rem; border-bottom: 1px solid var(--rule); }
+    .eyebrow { margin: 0 0 0.7rem; color: var(--terracotta); font-size: 0.78rem; font-weight: 750; letter-spacing: 0.09em; text-transform: uppercase; }
+    h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 500; line-height: 1.15; text-wrap: balance; }
+    h1 { max-width: 17ch; margin: 0; font-size: clamp(2.55rem, 7vw, 5.7rem); letter-spacing: -0.045em; }
+    h2 { margin: 0 0 1.4rem; font-size: clamp(1.8rem, 4vw, 2.65rem); letter-spacing: -0.025em; }
+    h3 { margin: 0 0 0.65rem; font-size: 1.34rem; }
+    .deck { max-width: 62ch; margin: 1.4rem 0 0; color: var(--gray); font-size: 1.12rem; }
+    .meta { display: flex; flex-wrap: wrap; gap: 0.45rem 1.3rem; margin: 1.6rem 0 0; padding: 0; color: var(--gray); font-size: 0.88rem; list-style: none; }
+    main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, 0.36fr); gap: clamp(2.2rem, 7vw, 6.5rem); padding: 2.5rem 0 6rem; }
+    .content { min-width: 0; max-width: 760px; }
+    section { padding: 2.8rem 0; border-bottom: 1px solid var(--rule); }
+    .summary { margin: 0 0 0.4rem; padding: clamp(1.4rem, 4vw, 2.2rem); border: 1px solid var(--rule); background: var(--surface); box-shadow: 7px 7px 0 #E4DCCE; }
+    .summary dl { display: grid; grid-template-columns: minmax(120px, 0.34fr) 1fr; gap: 1rem 1.5rem; margin: 0; }
+    .summary dt { color: var(--terracotta); font-size: 0.77rem; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; }
+    .summary dd { margin: 0; }
+    .brief-end { margin: 1.2rem 0 0; padding-top: 0.9rem; border-top: 2px solid var(--ink); font-size: 0.82rem; font-weight: 800; letter-spacing: 0.045em; text-transform: uppercase; }
+    .learning-diff { display: grid; grid-template-columns: minmax(150px, 0.35fr) 1fr; gap: 1rem 1.5rem; margin: 0; }
+    .learning-diff dt { color: var(--terracotta); font-size: 0.8rem; font-weight: 750; letter-spacing: 0.045em; text-transform: uppercase; }
+    .learning-diff dd { margin: 0; }
+    .learning-diff .plain-list { margin: 0; }
+    .objective { font-family: Georgia, "Times New Roman", serif; font-size: 1.48rem; line-height: 1.42; }
+    .concept + .concept { margin-top: 2rem; padding-top: 2rem; border-top: 1px dotted var(--rule); }
+    .project-example { padding-left: 1rem; border-left: 3px solid var(--olive); }
+    .plain-list { padding-left: 1.2rem; }
+    .plain-list li + li { margin-top: 0.7rem; }
+    .project-trace { display: grid; gap: 0; margin: 0; padding: 0; border-top: 1px solid var(--rule); list-style: none; }
+    .project-trace li { display: grid; grid-template-columns: minmax(110px, 0.24fr) minmax(170px, 0.35fr) 1fr; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+    .project-trace code { overflow-wrap: anywhere; color: var(--olive-dark); }
+    .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; overflow: hidden; margin-bottom: 1.3rem; border: 1px solid var(--rule); background: var(--rule); }
+    .comparison > div { padding: 1.3rem; background: var(--surface); }
+    .visual { margin: 1.4rem 0 0; padding: 1.4rem 0 0; }
+    .visual figcaption p { color: var(--gray); }
+    .flow { display: grid; gap: 0; margin: 1.4rem 0 0; padding: 0; list-style: none; }
+    .flow li { position: relative; display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.85rem; align-items: center; min-height: 4.2rem; padding: 0.65rem 0; }
+    .flow li:not(:last-child)::after { content: ""; position: absolute; top: 3.15rem; bottom: -0.6rem; left: 1.22rem; width: 1px; background: var(--rule); }
+    .step-number { position: relative; z-index: 1; display: grid; width: 2.45rem; height: 2.45rem; place-items: center; border: 1px solid var(--olive); border-radius: 50%; background: var(--paper); font-weight: 700; }
+    .three-stage { min-height: 250px; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--rule); background: var(--surface); }
+    .three-stage canvas { width: 100%; height: 300px; }
+    .relationship-fallback { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; margin: 0; padding: 1.2rem; list-style: none; }
+    .relationship-fallback li { max-width: 14rem; padding: 0.8rem 1rem; border: 1px solid var(--rule); border-bottom: 3px solid var(--olive); background: var(--paper); text-align: center; }
+    .visual-actions { display: flex; align-items: center; gap: 1rem; margin-top: 0.9rem; }
+    .network-note { max-width: 54ch; margin: 0; color: var(--gray); font-size: 0.8rem; line-height: 1.45; }
+    .question { margin: 0; padding: 1.5rem 0; border: 0; border-top: 1px solid var(--rule); }
+    .question legend { padding: 0 0 0.9rem; font-family: Georgia, "Times New Roman", serif; font-size: 1.22rem; line-height: 1.4; }
+    .choices { display: grid; gap: 0.7rem; margin-bottom: 1rem; }
+    .choices label { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.8rem; border: 1px solid transparent; cursor: pointer; }
+    .choices label:has(input:checked) { border-color: var(--olive); background: var(--surface); }
+    .choices input { margin-top: 0.35rem; accent-color: var(--olive-dark); }
+    .status { min-height: 1.6em; color: var(--olive-dark); font-weight: 650; }
+    .response-label { display: block; margin-bottom: 0.55rem; color: var(--gray); font-size: 0.9rem; }
+    textarea { width: 100%; margin-bottom: 0.8rem; padding: 0.8rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--ink); line-height: 1.5; resize: vertical; }
+    .guidance { margin-top: 1rem; padding: 1rem 1.1rem; border-left: 4px solid var(--olive); background: var(--surface); }
+    .guidance p { margin: 0; }
+    .guidance p + p { margin-top: 0.75rem; }
+    .transfer { padding: 1.4rem 0 0 1.2rem; border-left: 4px solid var(--terracotta); font-family: Georgia, "Times New Roman", serif; font-size: 1.3rem; }
+    aside { align-self: start; position: sticky; top: 1.2rem; padding-top: 0.6rem; color: var(--gray); font-size: 0.86rem; }
+    aside h2 { color: var(--ink); font-family: inherit; font-size: 0.82rem; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; }
+    aside ol { margin: 0; padding-left: 1.1rem; }
+    aside li + li { margin-top: 0.55rem; }
+    footer { padding: 1.5rem 0 3rem; border-top: 1px solid var(--rule); color: var(--gray); font-size: 0.82rem; }
+    @media (max-width: 760px) {
+      header { padding-top: 2.8rem; }
+      main { display: block; padding-top: 1.5rem; }
+      aside { position: static; margin-bottom: 1rem; padding: 1rem 0 1.4rem; border-bottom: 1px solid var(--rule); }
+      .summary dl { grid-template-columns: 1fr; gap: 0.25rem; }
+      .summary dd + dt { margin-top: 0.8rem; }
+      .learning-diff { grid-template-columns: 1fr; gap: 0.25rem; }
+      .learning-diff dd + dt { margin-top: 0.8rem; }
+      .project-trace li { grid-template-columns: 1fr; gap: 0.3rem; }
+      .comparison { grid-template-columns: 1fr; }
+      .visual-actions { align-items: flex-start; flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }
+    @media print {
+      :root, body { background: white; }
+      .page { width: 100%; }
+      main { display: block; }
+      aside, .no-print { display: none !important; }
+      section { break-inside: avoid; }
+      .summary { box-shadow: none; }
+    }
+  </style>
+</head>
+<body data-lesson-config="{&quot;threeVersion&quot;: &quot;0.180.0&quot;}">
+  <div class="page">
+    <header>
+      <p class="eyebrow">Learn while building</p>
+      <h1>How project work becomes a useful lesson</h1>
+      <p class="deck">Explain how the skill separates adaptive teaching content from a stable renderer, and identify why that separation makes the result safer to update.</p>
+      <ul class="meta">
+        <li><strong>Project:</strong> Learn While Building</li>
+        <li><strong>Prepared:</strong> 2026-08-29</li>
+        <li><strong>Sources:</strong> current design conversation, skill package files, local validation results</li>
+      </ul>
+    </header>
+    <main>
+      <div class="content">
+        <section class="summary" aria-labelledby="summary-heading">
+          <h2 id="summary-heading">30-second learning brief</h2>
+          <dl>
+            <dt>What happened</dt><dd>The project was split into a small teaching skill, structured lesson data, and a stable HTML renderer.</dd>
+            <dt>Why it matters</dt><dd>The agent can adapt explanations to each learner without redesigning the page or weakening accessibility on every run.</dd>
+            <dt>What changed</dt><dd>Learning goals, project evidence, review questions, and visual descriptions now enter one validated data format before they become a lesson.</dd>
+            <dt>What to learn</dt><dd>Separate variable content from fixed presentation when one part needs to adapt and the other needs to stay predictable.</dd>
+            <dt>Verification</dt><dd>The package tests validate the lesson data, render the page, and check its quiz and responsive layout. The optional network 3D enhancement is not required for the lesson.</dd>
+          </dl>
+          <p class="brief-end">End of 30-second learning brief</p>
+        </section>
+
+    <section aria-labelledby="learning-diff-heading">
+      <h2 id="learning-diff-heading">Learning Diff</h2>
+      <dl class="learning-diff">
+        <dt>Software change</dt><dd>The skill now separates its short learning brief from the agent response with a fixed end marker, then uses structured learning data for deeper practice.</dd>
+        <dt>Why it works</dt><dd>A stable boundary lets the learner stop after the brief or continue into detail without confusing the two layers.</dd>
+        <dt>Mental model</dt><dd>Separate a small predictable interface from the richer system behind it. The boundary makes each part easier to use and test.</dd>
+        <dt>You can now practice</dt><dd><ul class="plain-list"><li>Identify where the learning brief ends and the normal response begins</li><li>Explain why validated content and a stable renderer can evolve independently</li></ul></dd>
+        <dt>Verification and limits</dt><dd>The validator and renderer are covered by package tests. A rendered browser check is still needed to verify the visible boundary and practice interaction.</dd>
+      </dl>
+    </section>
+
+        <section aria-labelledby="objective-heading">
+          <h2 id="objective-heading">Your learning goal</h2>
+          <p class="objective">Explain how the skill separates adaptive teaching content from a stable renderer, and identify why that separation makes the result safer to update.</p>
+        </section>
+
+        <section aria-labelledby="change-heading">
+          <h2 id="change-heading">Before and after</h2>
+          <div class="comparison">
+            <div><h3>Before</h3><p>An agent could generate a different page structure and visual style for every lesson.</p></div>
+            <div><h3>After</h3><p>The agent generates validated lesson data, then one renderer applies the same readable structure and accessibility rules.</p></div>
+          </div>
+          <p><strong>Why it works:</strong> A stable boundary makes both content adaptation and interface testing easier to reason about.</p>
+        </section>
+
+        <section aria-labelledby="model-heading">
+          <h2 id="model-heading">How to think about it</h2>
+
+        <article class="concept">
+          <h3>Separate content from presentation</h3>
+          <p>Content is the meaning of the lesson. Presentation is the layout and interaction used to communicate it. Keeping them separate lets each change for a clear reason.</p>
+          <p class="project-example"><strong>In this project:</strong> The agent writes the summary and questions in JSON. The renderer decides typography, spacing, keyboard behavior, and the visual fallback.</p>
+        </article>
+
+        <article class="concept">
+          <h3>Use project evidence as the source</h3>
+          <p>An explanation becomes useful when it points to the actual decision, file, test, or behavior that produced it.</p>
+          <p class="project-example"><strong>In this project:</strong> This lesson cites the schema, validator, renderer, and package tests instead of describing an imaginary application.</p>
+        </article>
+
+        <article class="concept">
+          <h3>Make enhancement optional</h3>
+          <p>A richer feature should not remove the basic path. If it fails, the learner still needs the full explanation.</p>
+          <p class="project-example"><strong>In this project:</strong> The 3D view loads only after a button press. A labeled static relationship remains visible before and after that choice.</p>
+        </article>
+
+        </section>
+        <section aria-labelledby="evidence-heading"><h2 id="evidence-heading">Evidence used</h2><ul class="plain-list"><li>SKILL.md defines when and how the agent teaches.</li><li>lesson-schema.md defines the content contract.</li><li>validate_lesson.py rejects incomplete or disallowed lesson copy.</li><li>render_lesson.py creates one self-contained HTML page with an offline fallback.</li></ul></section>
+        <section aria-labelledby="trace-heading"><h2 id="trace-heading">Project trace</h2><ul class="project-trace"><li><strong>Skill contract</strong><code>SKILL.md</code><span>Defines the maximum 30-second brief and its required end marker.</span></li><li><strong>Validator</strong><code>scripts/validate_lesson.py</code><span>Rejects overlong briefs and incomplete open-response practice.</span></li><li><strong>Renderer</strong><code>scripts/render_lesson.py</code><span>Displays the boundary and requires an attempt before guidance is revealed.</span></li></ul></section>
+        <section aria-labelledby="visuals-heading"><h2 id="visuals-heading">See the relationship</h2>
+    <figure class="visual" aria-labelledby="visual-title-0">
+      <figcaption>
+        <h3 id="visual-title-0">From project work to lesson</h3>
+        <p>The lesson is created through a short sequence with a validation boundary.</p>
+      </figcaption>
+      <ol class="flow" aria-label="Flow steps"><li><span class="step-number">1</span><span>Inspect the current request and project evidence</span></li><li><span class="step-number">2</span><span>Adapt to the learner&#x27;s objective and prior records</span></li><li><span class="step-number">3</span><span>Write structured lesson data</span></li><li><span class="step-number">4</span><span>Validate tone, completeness, and quiz answers</span></li><li><span class="step-number">5</span><span>Render and test the offline lesson</span></li></ol>
+    </figure>
+
+    <figure class="visual three-visual" aria-labelledby="visual-title-1" data-three-objects="[{&quot;label&quot;: &quot;Conversation context&quot;, &quot;color&quot;: &quot;olive&quot;}, {&quot;label&quot;: &quot;Project evidence&quot;, &quot;color&quot;: &quot;terracotta&quot;}, {&quot;label&quot;: &quot;Stable renderer&quot;, &quot;color&quot;: &quot;warm-gray&quot;}]">
+      <figcaption>
+        <h3 id="visual-title-1">Three parts with different jobs</h3>
+        <p>The conversation informs the content, project evidence keeps it factual, and the renderer makes it readable.</p>
+      </figcaption>
+      <div class="three-stage" role="img" aria-label="Static relationship view">
+        <ul class="relationship-fallback"><li>Conversation context</li><li>Project evidence</li><li>Stable renderer</li></ul>
+        <canvas hidden aria-hidden="true"></canvas>
+      </div>
+      <div class="visual-actions no-print">
+        <button type="button" class="secondary enable-three">Enable 3D view</button>
+        <p class="network-note">Optional. This loads a pinned Three.js module from jsDelivr. The lesson is complete without it.</p>
+      </div>
+      <p class="three-status status" aria-live="polite"></p>
+    </figure>
+    </section>
+        <section aria-labelledby="practice-heading">
+          <h2 id="practice-heading">Try it yourself</h2>
+          <form>
+            <fieldset class="question" data-answer="0" data-explanation="The goal changes what the lesson teaches. The stable renderer should keep its readability and interaction rules.">
+              <legend>1. The learner changes their goal from understanding tests to understanding architecture. Which part should change first?</legend>
+              <div class="choices"><label><input type="radio" name="question-0" value="0"> <span>The structured lesson content</span></label><label><input type="radio" name="question-0" value="1"> <span>The page typography and keyboard controls</span></label><label><input type="radio" name="question-0" value="2"> <span>The color palette</span></label></div>
+              <button type="button" class="check-answer">Check answer</button>
+              <p class="answer-status status" aria-live="polite"></p>
+            </fieldset>
+
+            <fieldset class="question" data-answer="1" data-explanation="The rich view is optional. The static and text paths carry the same learning meaning without a network request.">
+              <legend>2. The Three.js module cannot load while the learner is offline. What should happen?</legend>
+              <div class="choices"><label><input type="radio" name="question-1" value="0"> <span>The lesson should stop until the connection returns</span></label><label><input type="radio" name="question-1" value="1"> <span>The static relationship and complete text explanation should remain usable</span></label><label><input type="radio" name="question-1" value="2"> <span>The quiz should be removed</span></label></div>
+              <button type="button" class="check-answer">Check answer</button>
+              <p class="answer-status status" aria-live="polite"></p>
+            </fieldset>
+
+                <fieldset class="question open-question">
+                  <legend>3. If the renderer did not show a fixed end marker after the short brief, what confusion could that create for the learner?</legend>
+                  <label class="response-label" for="response-2">Write your reasoning before revealing guidance.</label>
+                  <textarea id="response-2" rows="5" placeholder="Your answer"></textarea>
+                  <button type="button" class="reveal-guidance">Reveal guidance</button>
+                  <p class="answer-status status" aria-live="polite"></p>
+                  <div class="guidance" hidden>
+                    <p><strong>Guidance:</strong> Consider the learner who wants only the quick understanding and the learner who wants the full technical response.</p>
+                    <p><strong>Model answer:</strong> The learner could not reliably tell which information belongs to the promised short learning artifact and which belongs to the normal agent response. That makes the time promise unclear and makes the format harder to scan.</p>
+                    <p><strong>Connection to the project:</strong> The fixed marker is an interface boundary. It gives both reading paths a predictable point of separation.</p>
+                  </div>
+                </fieldset>
+                </form>
+        </section>
+        <section aria-labelledby="transfer-heading">
+          <h2 id="transfer-heading">Use the idea again</h2>
+          <p class="transfer">Where else in your current project could separating variable content from stable presentation make future changes easier to test?</p>
+        </section>
+      </div>
+      <aside aria-labelledby="contents-heading">
+        <h2 id="contents-heading">In this lesson</h2>
+        <ol>
+          <li>Read the learning brief</li>
+          <li>Build the mental model</li>
+          <li>Inspect the project evidence</li>
+          <li>Answer without peeking</li>
+          <li>Transfer the idea</li>
+        </ol>
+      </aside>
+    </main>
+    <footer>This lesson strengthens a foundation. It does not by itself establish professional competence.</footer>
+  </div>
+  <script>
+    document.querySelectorAll('.check-answer').forEach((button) => {
+      button.addEventListener('click', () => {
+        const question = button.closest('.question');
+        const selected = question.querySelector('input:checked');
+        const status = question.querySelector('.answer-status');
+        if (!selected) {
+          status.textContent = 'Choose an answer first.';
+          return;
+        }
+        const correct = Number(selected.value) === Number(question.dataset.answer);
+        status.textContent = `${correct ? 'That fits the evidence.' : 'Look at the project evidence once more.'} ${question.dataset.explanation}`;
+      });
+    });
+
+    document.querySelectorAll('.reveal-guidance').forEach((button) => {
+      button.addEventListener('click', () => {
+        const question = button.closest('.question');
+        const response = question.querySelector('textarea');
+        const status = question.querySelector('.answer-status');
+        if (!response.value.trim()) {
+          status.textContent = 'Write an attempt before revealing guidance.';
+          response.focus();
+          return;
+        }
+        question.querySelector('.guidance').hidden = false;
+        status.textContent = 'Compare your reasoning with the guidance below.';
+        button.disabled = true;
+      });
+    });
+
+    document.querySelectorAll('.enable-three').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const figure = button.closest('.three-visual');
+        const status = figure.querySelector('.three-status');
+        const canvas = figure.querySelector('canvas');
+        button.disabled = true;
+        status.textContent = 'Loading the optional 3D view.';
+        try {
+          const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js');
+          const objects = JSON.parse(figure.dataset.threeObjects);
+          const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+          const width = Math.max(320, canvas.parentElement.clientWidth);
+          const height = 300;
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          renderer.setSize(width, height, false);
+          const scene = new THREE.Scene();
+          const camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 100);
+          camera.position.set(0, 1.2, 8.5);
+          const light = new THREE.DirectionalLight(0xfff4df, 3.2);
+          light.position.set(3, 5, 6);
+          scene.add(light, new THREE.AmbientLight(0xffffff, 1.8));
+          const palette = { olive: 0x657054, terracotta: 0xA45D3F, 'warm-gray': 0x746F66 };
+          const group = new THREE.Group();
+          objects.forEach((item, index) => {
+            const angle = (index / objects.length) * Math.PI * 2;
+            const mesh = new THREE.Mesh(
+              new THREE.BoxGeometry(1.25, 1.25, 1.25),
+              new THREE.MeshStandardMaterial({ color: palette[item.color] || palette['warm-gray'], roughness: 0.62 })
+            );
+            mesh.position.set(Math.cos(angle) * 2.35, Math.sin(angle * 2) * 0.6, Math.sin(angle) * 1.2);
+            group.add(mesh);
+          });
+          scene.add(group);
+          canvas.hidden = false;
+          canvas.setAttribute('aria-hidden', 'false');
+          canvas.setAttribute('aria-label', `3D relationship view showing ${objects.map((item) => item.label).join(', ')}`);
+          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          let frame = 0;
+          const draw = () => {
+            if (!reduced) group.rotation.y += 0.0025;
+            group.children.forEach((mesh, index) => { mesh.rotation.x = 0.18 + index * 0.12; mesh.rotation.y += reduced ? 0 : 0.0015; });
+            renderer.render(scene, camera);
+            if (!reduced && frame < 2400) { frame += 1; requestAnimationFrame(draw); }
+          };
+          draw();
+          status.textContent = '3D view enabled. The labeled static explanation remains available in the lesson text.';
+        } catch (error) {
+          button.disabled = false;
+          status.textContent = 'The 3D view could not load. The static explanation above remains complete.';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

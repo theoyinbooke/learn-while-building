@@ -1,22 +1,24 @@
 {
   "name": "learn-while-building",
-  "version": "0.1.0",
-  "description": "Turn real project work into adaptive, practical lessons without interrupting the build.",
+  "version": "0.1.1",
+  "description": "Ship real project work while building durable, project-grounded understanding.",
   "author": {
     "name": "Olanrewaju Oyinbooke"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Learn While Building",
-    "shortDescription": "Learn from your own code while the agent builds it.",
-    "longDescription": "Adds a calm teaching layer to coding work: a 30-second summary first, project-grounded explanations, learning records, review questions, and optional offline HTML lessons.",
+    "shortDescription": "Ship the code. Keep the understanding.",
+    "longDescription": "Adds a calm learning layer to coding work: a clearly bounded 30-second brief, Quiet, Coach, and Deep modes, project-grounded Learning Diffs, gradual handback, delayed recall, private learning records, and optional offline lessons.",
     "developerName": "Olanrewaju Oyinbooke",
     "category": "Developer Tools",
     "capabilities": [
-      "Adaptive explanations grounded in the active project",
-      "Project learning profiles and cross-session learning records",
-      "Offline interactive lesson generation with accessible visual fallbacks"
+      "A maximum 30-second learning brief with a fixed end boundary",
+      "Quiet, Coach, and Deep learning modes with gradual handback",
+      "Project-grounded Learning Diffs, open-response practice, delayed recall, and misconception tracking",
+      "Session-only, private-project, and shared-project privacy modes",
+      "Offline interactive lessons with accessible visual fallbacks"
     ],
-    "defaultPrompt": "Use $learn-while-building to explain this project work as we build it, beginning with the 30-second summary."
+    "defaultPrompt": "Use $learn-while-building in Quiet mode. Begin meaningful updates with the maximum 30-second learning brief and its fixed end marker, then continue the normal project response."
   }
 }

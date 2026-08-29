@@ -1,4 +1,5 @@
 {
+  "schemaVersion": "0.1.1",
   "meta": {
     "title": "How project work becomes a useful lesson",
     "project": "Learn While Building",
@@ -17,10 +18,21 @@
     "whatToLearn": "Separate variable content from fixed presentation when one part needs to adapt and the other needs to stay predictable.",
     "verification": "The package tests validate the lesson data, render the page, and check its quiz and responsive layout. The optional network 3D enhancement is not required for the lesson."
   },
+  "learningDiff": {
+    "softwareChange": "The skill now separates its short learning brief from the agent response with a fixed end marker, then uses structured learning data for deeper practice.",
+    "whyItWorks": "A stable boundary lets the learner stop after the brief or continue into detail without confusing the two layers.",
+    "mentalModel": "Separate a small predictable interface from the richer system behind it. The boundary makes each part easier to use and test.",
+    "canNow": [
+      "Identify where the learning brief ends and the normal response begins",
+      "Explain why validated content and a stable renderer can evolve independently"
+    ],
+    "verificationLimits": "The validator and renderer are covered by package tests. A rendered browser check is still needed to verify the visible boundary and practice interaction."
+  },
+  "scaffoldingStage": 2,
   "evidence": [
     "SKILL.md defines when and how the agent teaches.",
     "lesson-schema.md defines the content contract.",
-    "validate_lesson.py rejects incomplete or artificial lesson copy.",
+    "validate_lesson.py rejects incomplete or disallowed lesson copy.",
     "render_lesson.py creates one self-contained HTML page with an offline fallback."
   ],
   "beforeAfter": {
@@ -43,6 +55,23 @@
       "name": "Make enhancement optional",
       "plainExplanation": "A richer feature should not remove the basic path. If it fails, the learner still needs the full explanation.",
       "projectExample": "The 3D view loads only after a button press. A labeled static relationship remains visible before and after that choice."
+    }
+  ],
+  "projectTrace": [
+    {
+      "label": "Skill contract",
+      "path": "SKILL.md",
+      "reason": "Defines the maximum 30-second brief and its required end marker."
+    },
+    {
+      "label": "Validator",
+      "path": "scripts/validate_lesson.py",
+      "reason": "Rejects overlong briefs and incomplete open-response practice."
+    },
+    {
+      "label": "Renderer",
+      "path": "scripts/render_lesson.py",
+      "reason": "Displays the boundary and requires an attempt before guidance is revealed."
     }
   ],
   "visualizations": [
@@ -71,6 +100,7 @@
   ],
   "quiz": [
     {
+      "type": "multiple-choice",
       "question": "The learner changes their goal from understanding tests to understanding architecture. Which part should change first?",
       "choices": [
         "The structured lesson content",
@@ -81,6 +111,7 @@
       "explanation": "The goal changes what the lesson teaches. The stable renderer should keep its readability and interaction rules."
     },
     {
+      "type": "multiple-choice",
       "question": "The Three.js module cannot load while the learner is offline. What should happen?",
       "choices": [
         "The lesson should stop until the connection returns",
@@ -89,7 +120,15 @@
       ],
       "answer": 1,
       "explanation": "The rich view is optional. The static and text paths carry the same learning meaning without a network request."
+    },
+    {
+      "type": "prediction",
+      "question": "If the renderer did not show a fixed end marker after the short brief, what confusion could that create for the learner?",
+      "guidance": "Consider the learner who wants only the quick understanding and the learner who wants the full technical response.",
+      "modelAnswer": "The learner could not reliably tell which information belongs to the promised short learning artifact and which belongs to the normal agent response. That makes the time promise unclear and makes the format harder to scan.",
+      "explanation": "The fixed marker is an interface boundary. It gives both reading paths a predictable point of separation."
     }
   ],
+  "recallPrompt": "Without looking at the lesson, explain why a fixed boundary between the learning brief and detailed response improves both usability and testing.",
   "transferQuestion": "Where else in your current project could separating variable content from stable presentation make future changes easier to test?"
 }
